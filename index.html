@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>kvitra</title>
+<meta name="description" content="kvitra — 初雪落定的纯白与寂静。">
+
+<!-- favicon: k monogram -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232b323a'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='22' fill='%23f4f6f8' text-anchor='middle'%3Ek%3C/text%3E%3C/svg%3E">
+
+<!-- open graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="kvitra">
+<meta property="og:description" content="初雪落定的纯白与寂静。">
+<meta property="og:url" content="https://kvitra.com">
+<meta name="twitter:card" content="summary">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300;400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* self-hosted Noto Serif SC subset (CN glyphs only) */
+  @font-face{
+    font-family:'Noto Serif SC';
+    font-style:normal;
+    font-weight:300;
+    font-display:swap;
+    src:url('fonts/NotoSerifSC-Light.subset.woff2') format('woff2');
+  }
+  @font-face{
+    font-family:'Noto Serif SC';
+    font-style:normal;
+    font-weight:400;
+    font-display:swap;
+    src:url('fonts/NotoSerifSC-Regular.subset.woff2') format('woff2');
+  }
+  @font-face{
+    font-family:'Noto Serif SC';
+    font-style:normal;
+    font-weight:500;
+    font-display:swap;
+    src:url('fonts/NotoSerifSC-Medium.subset.woff2') format('woff2');
+  }
+</style>
+<style>
+  :root{
+    /* background */
+    --snow:        #f4f6f8;
+    --snow-deep:   #eef1f4;
+    /* text colors */
+    --ink:         #2b323a;
+    --ink-soft:    #5a636e;
+    --ink-faint:   #9aa3ae;
+    /* warm accent */
+    --dawn:        #d8c4a8;
+    --dawn-soft:   #e9ddca;
+    --line:        rgba(43,50,58,0.10);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ -webkit-text-size-adjust:100%; }
+
+  body{
+    background:
+      radial-gradient(120% 80% at 50% -10%, #ffffff 0%, var(--snow) 45%, var(--snow-deep) 100%);
+    color:var(--ink);
+    font-family:'Cormorant', 'Noto Serif SC', Georgia, serif;
+    line-height:1.75;
+    min-height:100vh;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  /* snowfall */
+  .snow{
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:1;
+  }
+  .flake{
+    position:absolute;
+    top:-5vh;
+    border-radius:50%;
+    background:#ffffff;
+    box-shadow:0 0 3px rgba(120,140,165,0.55), 0 0 1px rgba(90,110,140,0.6);
+    opacity:0;
+    animation-name:fall;
+    animation-timing-function:linear;
+    animation-iteration-count:infinite;
+  }
+  @keyframes fall{
+    0%   { transform:translateY(-5vh) translateX(0);     opacity:0; }
+    10%  { opacity:.9; }
+    90%  { opacity:.9; }
+    100% { transform:translateY(105vh) translateX(var(--drift)); opacity:0; }
+  }
+
+  /* main container */
+  .stage{
+    position:relative;
+    z-index:2;
+    max-width:680px;
+    margin:0 auto;
+    padding:clamp(4rem,14vh,9rem) clamp(1.6rem,6vw,2rem) 5rem;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+
+  /* wordmark */
+  .word{
+    font-family:'Cormorant', Georgia, serif;
+    font-weight:300;
+    font-size:clamp(4.2rem, 17vw, 9rem);
+    letter-spacing:.04em;
+    line-height:1;
+    color:var(--ink);
+    position:relative;
+  }
+  /* per-letter reveal */
+  .word span{
+    display:inline-block;
+    opacity:0;
+    transform:translateY(-0.4em);
+    filter:blur(6px);
+    animation:settle .9s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  @keyframes settle{
+    to{ opacity:1; transform:translateY(0); filter:blur(0); }
+  }
+
+  .phon{
+    margin-top:1.5rem;
+    font-family:'Inter',sans-serif;
+    font-weight:300;
+    font-size:.8rem;
+    letter-spacing:.42em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    padding-left:.42em;
+    opacity:0;
+    animation:fade 1.2s ease 1.1s forwards;
+  }
+
+  /* divider */
+  .horizon{
+    width:54px; height:1px;
+    margin:2.8rem 0 0;
+    background:linear-gradient(90deg, transparent, var(--dawn), transparent);
+    opacity:0;
+    animation:fade 1.4s ease 1.5s forwards;
+  }
+
+  /* epigraph */
+  .epigraph{
+    margin-top:clamp(3.5rem,9vh,5.5rem);
+    max-width:30rem;
+    text-align:left;
+    opacity:0;
+    animation:rise 1.6s cubic-bezier(.2,.7,.2,1) 1.7s forwards;
+  }
+  .epigraph p{
+    font-family:'Noto Serif SC', serif;
+    font-size:clamp(1.04rem,2.6vw,1.16rem);
+    font-weight:300;
+    color:var(--ink-soft);
+    margin-bottom:1.5rem;
+    line-height:2.05;
+    letter-spacing:.01em;
+  }
+  .epigraph .lead{ color:var(--ink); }
+  .epigraph .lead b{
+    font-weight:500;
+    font-style:normal;
+    color:var(--ink);
+  }
+  .epigraph .coda{
+    color:var(--ink);
+    font-size:clamp(1.1rem,2.8vw,1.24rem);
+    font-weight:400;
+    margin-top:.2rem;
+    margin-bottom:0;
+    padding-left:.1rem;
+  }
+  .epigraph .coda .warm{
+    color:#b08e5f;
+    font-weight:400;
+  }
+
+  /* notes / etymology */
+  .notes{
+    margin-top:clamp(5rem,12vh,8rem);
+    width:100%;
+    max-width:36rem;
+    opacity:0;
+    animation:fade 1.6s ease 2.1s forwards;
+  }
+  .note{
+    display:grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap:1.4rem;
+    padding:1.6rem 0;
+    border-top:1px solid var(--line);
+    text-align:left;
+  }
+  .note:last-child{ border-bottom:1px solid var(--line); }
+  .note dt{
+    font-family:'Inter',sans-serif;
+    font-weight:400;
+    font-size:.72rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    padding-top:.5rem;
+  }
+  .note dd{
+    font-family:'Noto Serif SC', serif;
+    font-size:1rem;
+    font-weight:300;
+    color:var(--ink-soft);
+    line-height:1.95;
+    letter-spacing:.01em;
+  }
+  .note dd b{
+    font-weight:500;
+    color:var(--ink);
+    font-style:normal;
+  }
+  .note .glyph{
+    font-family:'Cormorant',serif;
+    font-size:1.12em;
+    color:var(--ink);
+  }
+
+  /* footer */
+  .colophon{
+    margin-top:clamp(4rem,10vh,6rem);
+    font-family:'Inter',sans-serif;
+    font-size:.72rem;
+    font-weight:300;
+    letter-spacing:.06em;
+    color:var(--ink-faint);
+    line-height:2;
+    opacity:0;
+    animation:fade 1.6s ease 2.4s forwards;
+  }
+  .colophon .mark{ letter-spacing:.18em; }
+
+  @keyframes fade{ to{ opacity:1; } }
+  @keyframes rise{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+
+  @media (max-width:480px){
+    .note{ grid-template-columns:1fr; gap:.4rem; }
+    .note dt{ padding-top:0; }
+  }
+
+  /* reduced motion */
+  @media (prefers-reduced-motion:reduce){
+    .word span,.phon,.horizon,.epigraph,.notes,.colophon{
+      animation:none; opacity:1; transform:none; filter:none;
+    }
+    .flake{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="snow" id="snow" aria-hidden="true"></div>
+
+  <main class="stage">
+    <h1 class="word" id="word" aria-label="kvitra"></h1>
+    <div class="phon">KVEE&nbsp;·&nbsp;trah</div>
+    <div class="horizon" aria-hidden="true"></div>
+
+    <section class="epigraph" aria-label="题记">
+      <p class="lead">kvitra，取北欧&ldquo;白&rdquo;之根 <b>kvit</b>，缀以让它流动起来的 <b>-ra</b>&mdash;&mdash;初雪落定的纯白与寂静。</p>
+      <p>而在造它的过程中，意外发现它恰好是一个真实的挪威语词，意思是&ldquo;鸟鸣、写信&rdquo;。这层含义并非本意，但它真实地存在于这个名字的诞生里，所以一并记下。</p>
+      <p class="coda">&mdash;&mdash; kvitra 于我，是雪；而它在世间，也曾是<span class="warm">天光的鸣响</span>。</p>
+    </section>
+
+    <dl class="notes" aria-label="来历">
+      <div class="note">
+        <dt>读音</dt>
+        <dd><span class="glyph">KVEE-trah</span>，两个音节。kv 起手，是北欧舌音特有的那一记清冷的起势。</dd>
+      </div>
+      <div class="note">
+        <dt>字根</dt>
+        <dd><b>kvit</b> —— 古诺尔斯语、冰岛语里&ldquo;白&rdquo;的词根。维京人用它称呼雪、霜、和漂白的羊毛；它在北境的舌头上，活了一千年。</dd>
+      </div>
+      <div class="note">
+        <dt>尾音</dt>
+        <dd><b>-ra</b> —— 一个动词化的尾。它让&ldquo;白&rdquo;不再只是一种颜色，而成为一件正在发生的事：正在落，正在覆，正在静下来。</dd>
+      </div>
+      <div class="note">
+        <dt>意外</dt>
+        <dd>它恰好是真实的挪威语动词，意为<b>鸟鸣</b>，也用以指<b>写信、传讯</b> —— 一封信落到这里，便是雪上的一声鸣响。</dd>
+      </div>
+    </dl>
+
+    <footer class="colophon">
+      <div class="mark">KVITRA.COM</div>
+      <div>一个名字，从一场长夜里挖出，于此落定。</div>
+    </footer>
+  </main>
+
+<script>
+  // build wordmark, one span per letter for staggered reveal
+  (function(){
+    var word = document.getElementById('word');
+    var letters = 'kvitra'.split('');
+    letters.forEach(function(ch, i){
+      var s = document.createElement('span');
+      s.textContent = ch;
+      s.style.animationDelay = (0.15 + i * 0.11) + 's';
+      word.appendChild(s);
+    });
+  })();
+
+  // generate snowflakes with randomized size/speed/drift
+  (function(){
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    var snow = document.getElementById('snow');
+    var N = 26;
+    for (var i=0;i<N;i++){
+      var f = document.createElement('div');
+      f.className = 'flake';
+      var size = (Math.random()*2.4 + 1.2).toFixed(1);      // px
+      var dur  = (Math.random()*14 + 14).toFixed(1);        // seconds
+      var delay= (Math.random()*-28).toFixed(1);            // negative delay to stagger start
+      var left = (Math.random()*100).toFixed(2);
+      var drift= ((Math.random()*60 - 30)).toFixed(0) + 'px'; // horizontal drift
+      f.style.width = size+'px';
+      f.style.height = size+'px';
+      f.style.left = left+'vw';
+      f.style.animationDuration = dur+'s';
+      f.style.animationDelay = delay+'s';
+      f.style.setProperty('--drift', drift);
+      f.style.opacity = '0';
+      snow.appendChild(f);
+    }
+  })();
+</script>
+</body>
+</html>
