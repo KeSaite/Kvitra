@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>kvitra</title>
-<meta name="description" content="kvitra — 初雪落定的纯白与寂静。">
+<meta name="description" content="kvitra — the pure white and stillness of the first snow.">
 
 <!-- favicon: k monogram -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232b323a'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='22' fill='%23f4f6f8' text-anchor='middle'%3Ek%3C/text%3E%3C/svg%3E">
@@ -12,38 +12,27 @@
 <!-- open graph -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="kvitra">
-<meta property="og:description" content="初雪落定的纯白与寂静。">
+<meta property="og:description" content="The pure white and stillness of the first snow.">
 <meta property="og:url" content="https://kvitra.com">
 <meta name="twitter:card" content="summary">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300;400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- preload the above-the-fold faces (same-origin fonts are fetched in CORS mode, hence crossorigin) -->
+<link rel="preload" as="font" type="font/woff2" href="fonts/Cormorant-300.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/EBGaramond-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/Inter-400.woff2" crossorigin>
 
 <style>
-  /* self-hosted Noto Serif SC subset (CN glyphs only) */
-  @font-face{
-    font-family:'Noto Serif SC';
-    font-style:normal;
-    font-weight:300;
-    font-display:swap;
-    src:url('fonts/NotoSerifSC-Light.subset.woff2') format('woff2');
-  }
-  @font-face{
-    font-family:'Noto Serif SC';
-    font-style:normal;
-    font-weight:400;
-    font-display:swap;
-    src:url('fonts/NotoSerifSC-Regular.subset.woff2') format('woff2');
-  }
-  @font-face{
-    font-family:'Noto Serif SC';
-    font-style:normal;
-    font-weight:500;
-    font-display:swap;
-    src:url('fonts/NotoSerifSC-Medium.subset.woff2') format('woff2');
-  }
+  /* self-hosted fonts — subset to Latin (Basic Latin + Latin-1 + General Punctuation), no external dependency */
+  @font-face{font-family:'Cormorant';font-style:normal;font-weight:300;font-display:swap;src:url('fonts/Cormorant-300.woff2') format('woff2');}
+  @font-face{font-family:'Cormorant';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/Cormorant-400.woff2') format('woff2');}
+  @font-face{font-family:'EB Garamond';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/EBGaramond-400.woff2') format('woff2');}
+  @font-face{font-family:'EB Garamond';font-style:normal;font-weight:500;font-display:swap;src:url('fonts/EBGaramond-500.woff2') format('woff2');}
+  @font-face{font-family:'EB Garamond';font-style:italic;font-weight:400;font-display:swap;src:url('fonts/EBGaramond-Italic-400.woff2') format('woff2');}
+  @font-face{font-family:'Inter';font-style:normal;font-weight:300;font-display:swap;src:url('fonts/Inter-300.woff2') format('woff2');}
+  @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/Inter-400.woff2') format('woff2');}
+  @font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url('fonts/Inter-500.woff2') format('woff2');}
 </style>
+
 <style>
   :root{
     /* background */
@@ -55,8 +44,12 @@
     --ink-faint:   #9aa3ae;
     /* warm accent */
     --dawn:        #d8c4a8;
-    --dawn-soft:   #e9ddca;
+    --warm:        #b08e5f;
     --line:        rgba(43,50,58,0.10);
+    /* snow (cool grey-blue: darker than the snow-white ground) */
+    --flake-rgb:   152,168,194;
+    --flake-glow:  70,92,124;
+    --glow-a:      .40;
   }
 
   *{ margin:0; padding:0; box-sizing:border-box; }
@@ -67,8 +60,8 @@
     background:
       radial-gradient(120% 80% at 50% -10%, #ffffff 0%, var(--snow) 45%, var(--snow-deep) 100%);
     color:var(--ink);
-    font-family:'Cormorant', 'Noto Serif SC', Georgia, serif;
-    line-height:1.75;
+    font-family:'EB Garamond', Georgia, serif;
+    line-height:1.7;
     min-height:100vh;
     overflow-x:hidden;
     -webkit-font-smoothing:antialiased;
@@ -85,8 +78,8 @@
     position:absolute;
     top:-5vh;
     border-radius:50%;
-    background:#ffffff;
-    box-shadow:0 0 3px rgba(120,140,165,0.55), 0 0 1px rgba(90,110,140,0.6);
+    background:rgba(var(--flake-rgb), var(--a, .7));
+    box-shadow:0 0 var(--bl, 4px) rgba(var(--flake-glow), var(--glow-a, .40));
     opacity:0;
     animation-name:fall;
     animation-timing-function:linear;
@@ -159,19 +152,19 @@
   /* epigraph */
   .epigraph{
     margin-top:clamp(3.5rem,9vh,5.5rem);
-    max-width:30rem;
+    max-width:31rem;
     text-align:left;
     opacity:0;
     animation:rise 1.6s cubic-bezier(.2,.7,.2,1) 1.7s forwards;
   }
   .epigraph p{
-    font-family:'Noto Serif SC', serif;
-    font-size:clamp(1.04rem,2.6vw,1.16rem);
-    font-weight:300;
+    font-family:'EB Garamond', serif;
+    font-size:clamp(1.08rem,2.6vw,1.22rem);
+    font-weight:400;
     color:var(--ink-soft);
     margin-bottom:1.5rem;
-    line-height:2.05;
-    letter-spacing:.01em;
+    line-height:1.85;
+    letter-spacing:.005em;
   }
   .epigraph .lead{ color:var(--ink); }
   .epigraph .lead b{
@@ -181,14 +174,15 @@
   }
   .epigraph .coda{
     color:var(--ink);
-    font-size:clamp(1.1rem,2.8vw,1.24rem);
+    font-size:clamp(1.16rem,2.8vw,1.32rem);
+    font-style:italic;
     font-weight:400;
     margin-top:.2rem;
     margin-bottom:0;
     padding-left:.1rem;
   }
   .epigraph .coda .warm{
-    color:#b08e5f;
+    color:var(--warm);
     font-weight:400;
   }
 
@@ -202,7 +196,7 @@
   }
   .note{
     display:grid;
-    grid-template-columns: 6.5rem 1fr;
+    grid-template-columns: 7rem 1fr;
     gap:1.4rem;
     padding:1.6rem 0;
     border-top:1px solid var(--line);
@@ -212,19 +206,19 @@
   .note dt{
     font-family:'Inter',sans-serif;
     font-weight:400;
-    font-size:.72rem;
+    font-size:.7rem;
     letter-spacing:.2em;
     text-transform:uppercase;
     color:var(--ink-faint);
-    padding-top:.5rem;
+    padding-top:.55rem;
   }
   .note dd{
-    font-family:'Noto Serif SC', serif;
-    font-size:1rem;
-    font-weight:300;
+    font-family:'EB Garamond', serif;
+    font-size:1.08rem;
+    font-weight:400;
     color:var(--ink-soft);
-    line-height:1.95;
-    letter-spacing:.01em;
+    line-height:1.78;
+    letter-spacing:.005em;
   }
   .note dd b{
     font-weight:500;
@@ -233,8 +227,9 @@
   }
   .note .glyph{
     font-family:'Cormorant',serif;
-    font-size:1.12em;
+    font-size:1.18em;
     color:var(--ink);
+    letter-spacing:.01em;
   }
 
   /* footer */
@@ -259,6 +254,29 @@
     .note dt{ padding-top:0; }
   }
 
+  /* polar night — a designed dark theme, not an inversion */
+  @media (prefers-color-scheme:dark){
+    :root{
+      --ink:        #dbe2ea;   /* soft cool off-white — never pure white */
+      --ink-soft:   #99a6b6;
+      --ink-faint:  #737f93;   /* lifted for nighttime legibility (~4.7:1) */
+      --dawn:       #c9a87a;   /* the thin promise of dawn at the horizon */
+      --warm:       #d3ad7d;
+      --line:       rgba(214,226,242,0.12);
+      /* snow: luminous cool-white, softened a touch for nighttime calm */
+      --flake-rgb:  200,212,230;
+      --flake-glow: 150,180,220;
+      --glow-a:     .28;
+    }
+    body{
+      background:
+        radial-gradient(120% 80% at 50% -12%, rgba(86,108,140,0.22) 0%, rgba(86,108,140,0) 46%),
+        radial-gradient(150% 62% at 50% 117%, rgba(150,120,78,0.15) 0%, rgba(150,120,78,0) 55%),
+        linear-gradient(180deg, #0f1822 0%, #0a111a 56%, #070b12 100%);
+      color:var(--ink);
+    }
+  }
+
   /* reduced motion */
   @media (prefers-reduced-motion:reduce){
     .word span,.phon,.horizon,.epigraph,.notes,.colophon{
@@ -277,34 +295,34 @@
     <div class="phon">KVEE&nbsp;·&nbsp;trah</div>
     <div class="horizon" aria-hidden="true"></div>
 
-    <section class="epigraph" aria-label="题记">
-      <p class="lead">kvitra，取北欧&ldquo;白&rdquo;之根 <b>kvit</b>，缀以让它流动起来的 <b>-ra</b>&mdash;&mdash;初雪落定的纯白与寂静。</p>
-      <p>而在造它的过程中，意外发现它恰好是一个真实的挪威语词，意思是&ldquo;鸟鸣、写信&rdquo;。这层含义并非本意，但它真实地存在于这个名字的诞生里，所以一并记下。</p>
-      <p class="coda">&mdash;&mdash; kvitra 于我，是雪；而它在世间，也曾是<span class="warm">天光的鸣响</span>。</p>
+    <section class="epigraph" aria-label="inscription">
+      <p class="lead">kvitra draws on <b>kvit</b>, the old northern root for &ldquo;white,&rdquo; and adds the <b>-ra</b> that sets it moving&mdash;the pure white and stillness of the first snow as it settles.</p>
+      <p>I built the name this way; only afterward did I learn it was already a real Norwegian word, meaning &ldquo;to chirp, to write a letter.&rdquo; That sense was never intended, yet it was there at the name&rsquo;s birth, so I keep it here too.</p>
+      <p class="coda">&mdash; To me, kvitra is snow; but out in the world it has also been <span class="warm">the ringing of first light</span>.</p>
     </section>
 
-    <dl class="notes" aria-label="来历">
+    <dl class="notes" aria-label="etymology">
       <div class="note">
-        <dt>读音</dt>
-        <dd><span class="glyph">KVEE-trah</span>，两个音节。kv 起手，是北欧舌音特有的那一记清冷的起势。</dd>
+        <dt>Sound</dt>
+        <dd><span class="glyph">KVEE-trah</span>, two syllables. It opens on kv&mdash;that cold, clean attack the northern tongue keeps for itself.</dd>
       </div>
       <div class="note">
-        <dt>字根</dt>
-        <dd><b>kvit</b> —— 古诺尔斯语、冰岛语里&ldquo;白&rdquo;的词根。维京人用它称呼雪、霜、和漂白的羊毛；它在北境的舌头上，活了一千年。</dd>
+        <dt>Root</dt>
+        <dd><b>kvit</b> &mdash; the old root for &ldquo;white&rdquo; in the Norse languages. They used it for snow, for frost, for bleached wool; it has lived a thousand years on northern tongues.</dd>
       </div>
       <div class="note">
-        <dt>尾音</dt>
-        <dd><b>-ra</b> —— 一个动词化的尾。它让&ldquo;白&rdquo;不再只是一种颜色，而成为一件正在发生的事：正在落，正在覆，正在静下来。</dd>
+        <dt>Ending</dt>
+        <dd><b>-ra</b> &mdash; a verb-making tail. It turns &ldquo;white&rdquo; from a mere color into something in progress: falling, covering, coming to rest.</dd>
       </div>
       <div class="note">
-        <dt>意外</dt>
-        <dd>它恰好是真实的挪威语动词，意为<b>鸟鸣</b>，也用以指<b>写信、传讯</b> —— 一封信落到这里，便是雪上的一声鸣响。</dd>
+        <dt>Chance</dt>
+        <dd>It also happens to be a true Norwegian verb, meaning <b>to chirp</b> &mdash; and likewise <b>to write, to send word</b>. A letter landing here is a single birdcall upon the snow.</dd>
       </div>
     </dl>
 
     <footer class="colophon">
       <div class="mark">KVITRA.COM</div>
-      <div>一个名字，从一场长夜里挖出，于此落定。</div>
+      <div>A name, dug out of a long night, come to rest here.</div>
     </footer>
   </main>
 
@@ -321,22 +339,28 @@
     });
   })();
 
-  // generate snowflakes with randomized size/speed/drift
+  // generate snowflakes with depth layering: size / opacity / blur / speed by depth
   (function(){
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
     var snow = document.getElementById('snow');
-    var N = 26;
+    var N = 70;
     for (var i=0;i<N;i++){
       var f = document.createElement('div');
       f.className = 'flake';
-      var size = (Math.random()*2.4 + 1.2).toFixed(1);      // px
-      var dur  = (Math.random()*14 + 14).toFixed(1);        // seconds
-      var delay= (Math.random()*-28).toFixed(1);            // negative delay to stagger start
-      var left = (Math.random()*100).toFixed(2);
-      var drift= ((Math.random()*60 - 30)).toFixed(0) + 'px'; // horizontal drift
+      // depth: skew toward 0 (far) so most flakes are small/faint, a few near and prominent
+      var t     = Math.pow(Math.random(), 1.6);             // 0 = far, 1 = near
+      var size  = (1.4 + t*4.8).toFixed(1);                 // 1.4 – 6.2 px
+      var alpha = (0.30 + t*0.55).toFixed(2);               // 0.30 – 0.85 fill opacity
+      var blur  = (2 + t*4).toFixed(1);                     // 2 – 6 px halo
+      var dur   = (26 - t*13 + Math.random()*4).toFixed(1); // near falls faster (~13–28s)
+      var delay = (Math.random()*-30).toFixed(1);           // negative delay to stagger start
+      var left  = (Math.random()*100).toFixed(2);
+      var drift = ((Math.random()*90 - 45)).toFixed(0) + 'px'; // horizontal drift ±45px
       f.style.width = size+'px';
       f.style.height = size+'px';
       f.style.left = left+'vw';
+      f.style.setProperty('--a', alpha);          // fill opacity (depth)
+      f.style.setProperty('--bl', blur+'px');     // halo radius (depth)
       f.style.animationDuration = dur+'s';
       f.style.animationDelay = delay+'s';
       f.style.setProperty('--drift', drift);
