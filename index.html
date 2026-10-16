@@ -1,408 +1,373 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>Meows</title>
-  <meta name="description" content="Meows is a native Android app for SSH, Linux server monitoring, Docker and SSH tunnels. No monitoring agent is required on the server.">
-  <link rel="icon" href="favicon.png" type="image/png">
-  <link rel="apple-touch-icon" href="favicon.png">
-  <meta name="google-site-verification" content="b_yXVIve3Viz64DMB6fFqK7dbHA58nTjf6VMWfUXWis">
-  <link rel="canonical" href="https://app.kvitra.com/">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f1f1ef">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#191919">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Meows">
-  <meta property="og:description" content="Meows is a native Android app for SSH, Linux server monitoring, Docker and SSH tunnels. No monitoring agent is required on the server.">
-  <meta property="og:url" content="https://app.kvitra.com/">
-  <meta property="og:image" content="https://app.kvitra.com/assets/screenshots/en/overview.webp">
-  <link rel="stylesheet" href="assets/site.css">
-  <link rel="stylesheet" href="assets/home.css">
-  <script src="assets/language.js" defer></script>
-  <script src="assets/home-i18n.js" defer></script>
-  <script src="assets/sketches.js" defer></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>kvitra</title>
+<meta name="description" content="kvitra — the pure white and stillness of the first snow.">
+
+<!-- favicon: k monogram -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232b323a'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='22' fill='%23f4f6f8' text-anchor='middle'%3Ek%3C/text%3E%3C/svg%3E">
+
+<!-- open graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="kvitra">
+<meta property="og:description" content="The pure white and stillness of the first snow.">
+<meta property="og:url" content="https://kvitra.com">
+<meta name="twitter:card" content="summary">
+
+<!-- preload the above-the-fold faces (same-origin fonts are fetched in CORS mode, hence crossorigin) -->
+<link rel="preload" as="font" type="font/woff2" href="fonts/Cormorant-300.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/EBGaramond-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/Inter-400.woff2" crossorigin>
+
+<style>
+  /* self-hosted fonts — subset to Latin (Basic Latin + Latin-1 + General Punctuation), no external dependency */
+  @font-face{font-family:'Cormorant';font-style:normal;font-weight:300;font-display:swap;src:url('fonts/Cormorant-300.woff2') format('woff2');}
+  @font-face{font-family:'Cormorant';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/Cormorant-400.woff2') format('woff2');}
+  @font-face{font-family:'EB Garamond';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/EBGaramond-400.woff2') format('woff2');}
+  @font-face{font-family:'EB Garamond';font-style:normal;font-weight:500;font-display:swap;src:url('fonts/EBGaramond-500.woff2') format('woff2');}
+  @font-face{font-family:'EB Garamond';font-style:italic;font-weight:400;font-display:swap;src:url('fonts/EBGaramond-Italic-400.woff2') format('woff2');}
+  @font-face{font-family:'Inter';font-style:normal;font-weight:300;font-display:swap;src:url('fonts/Inter-300.woff2') format('woff2');}
+  @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/Inter-400.woff2') format('woff2');}
+  @font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url('fonts/Inter-500.woff2') format('woff2');}
+</style>
+
+<style>
+  :root{
+    /* background */
+    --snow:        #f4f6f8;
+    --snow-deep:   #eef1f4;
+    /* text colors */
+    --ink:         #2b323a;
+    --ink-soft:    #5a636e;
+    --ink-faint:   #9aa3ae;
+    /* warm accent */
+    --dawn:        #d8c4a8;
+    --warm:        #b08e5f;
+    --line:        rgba(43,50,58,0.10);
+    /* snow (cool grey-blue: darker than the snow-white ground) */
+    --flake-rgb:   152,168,194;
+    --flake-glow:  70,92,124;
+    --glow-a:      .40;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ -webkit-text-size-adjust:100%; }
+
+  body{
+    background:
+      radial-gradient(120% 80% at 50% -10%, #ffffff 0%, var(--snow) 45%, var(--snow-deep) 100%);
+    color:var(--ink);
+    font-family:'EB Garamond', Georgia, serif;
+    line-height:1.7;
+    min-height:100vh;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  /* snowfall */
+  .snow{
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:1;
+  }
+  .flake{
+    position:absolute;
+    top:-5vh;
+    border-radius:50%;
+    background:rgba(var(--flake-rgb), var(--a, .7));
+    box-shadow:0 0 var(--bl, 4px) rgba(var(--flake-glow), var(--glow-a, .40));
+    opacity:0;
+    animation-name:fall;
+    animation-timing-function:linear;
+    animation-iteration-count:infinite;
+  }
+  @keyframes fall{
+    0%   { transform:translateY(-5vh) translateX(0);     opacity:0; }
+    10%  { opacity:.9; }
+    90%  { opacity:.9; }
+    100% { transform:translateY(105vh) translateX(var(--drift)); opacity:0; }
+  }
+
+  /* main container */
+  .stage{
+    position:relative;
+    z-index:2;
+    max-width:680px;
+    margin:0 auto;
+    padding:clamp(4rem,14vh,9rem) clamp(1.6rem,6vw,2rem) 5rem;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+
+  /* wordmark */
+  .word{
+    font-family:'Cormorant', Georgia, serif;
+    font-weight:300;
+    font-size:clamp(4.2rem, 17vw, 9rem);
+    letter-spacing:.04em;
+    line-height:1;
+    color:var(--ink);
+    position:relative;
+  }
+  /* per-letter reveal */
+  .word span{
+    display:inline-block;
+    opacity:0;
+    transform:translateY(-0.4em);
+    filter:blur(6px);
+    animation:settle .9s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  @keyframes settle{
+    to{ opacity:1; transform:translateY(0); filter:blur(0); }
+  }
+
+  .phon{
+    margin-top:1.5rem;
+    font-family:'Inter',sans-serif;
+    font-weight:300;
+    font-size:.8rem;
+    letter-spacing:.42em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    padding-left:.42em;
+    opacity:0;
+    animation:fade 1.2s ease 1.1s forwards;
+  }
+
+  /* divider */
+  .horizon{
+    width:54px; height:1px;
+    margin:2.8rem 0 0;
+    background:linear-gradient(90deg, transparent, var(--dawn), transparent);
+    opacity:0;
+    animation:fade 1.4s ease 1.5s forwards;
+  }
+
+  /* epigraph */
+  .epigraph{
+    margin-top:clamp(3.5rem,9vh,5.5rem);
+    max-width:31rem;
+    text-align:left;
+    opacity:0;
+    animation:rise 1.6s cubic-bezier(.2,.7,.2,1) 1.7s forwards;
+  }
+  .epigraph p{
+    font-family:'EB Garamond', serif;
+    font-size:clamp(1.08rem,2.6vw,1.22rem);
+    font-weight:400;
+    color:var(--ink-soft);
+    margin-bottom:1.5rem;
+    line-height:1.85;
+    letter-spacing:.005em;
+  }
+  .epigraph .lead{ color:var(--ink); }
+  .epigraph .lead b{
+    font-weight:500;
+    font-style:normal;
+    color:var(--ink);
+  }
+  .epigraph .coda{
+    color:var(--ink);
+    font-size:clamp(1.16rem,2.8vw,1.32rem);
+    font-style:italic;
+    font-weight:400;
+    margin-top:.2rem;
+    margin-bottom:0;
+    padding-left:.1rem;
+  }
+  .epigraph .coda .warm{
+    color:var(--warm);
+    font-weight:400;
+  }
+
+  /* notes / etymology */
+  .notes{
+    margin-top:clamp(5rem,12vh,8rem);
+    width:100%;
+    max-width:36rem;
+    opacity:0;
+    animation:fade 1.6s ease 2.1s forwards;
+  }
+  .note{
+    display:grid;
+    grid-template-columns: 7rem 1fr;
+    gap:1.4rem;
+    padding:1.6rem 0;
+    border-top:1px solid var(--line);
+    text-align:left;
+  }
+  .note:last-child{ border-bottom:1px solid var(--line); }
+  .note dt{
+    font-family:'Inter',sans-serif;
+    font-weight:400;
+    font-size:.7rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    padding-top:.55rem;
+  }
+  .note dd{
+    font-family:'EB Garamond', serif;
+    font-size:1.08rem;
+    font-weight:400;
+    color:var(--ink-soft);
+    line-height:1.78;
+    letter-spacing:.005em;
+  }
+  .note dd b{
+    font-weight:500;
+    color:var(--ink);
+    font-style:normal;
+  }
+  .note .glyph{
+    font-family:'Cormorant',serif;
+    font-size:1.18em;
+    color:var(--ink);
+    letter-spacing:.01em;
+  }
+
+  /* footer */
+  .colophon{
+    margin-top:clamp(4rem,10vh,6rem);
+    font-family:'Inter',sans-serif;
+    font-size:.72rem;
+    font-weight:300;
+    letter-spacing:.06em;
+    color:var(--ink-faint);
+    line-height:2;
+    opacity:0;
+    animation:fade 1.6s ease 2.4s forwards;
+  }
+  .colophon .mark{ letter-spacing:.18em; }
+
+  @keyframes fade{ to{ opacity:1; } }
+  @keyframes rise{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+
+  @media (max-width:480px){
+    .note{ grid-template-columns:1fr; gap:.4rem; }
+    .note dt{ padding-top:0; }
+  }
+
+  /* polar night — a designed dark theme, not an inversion */
+  @media (prefers-color-scheme:dark){
+    :root{
+      --ink:        #dbe2ea;   /* soft cool off-white — never pure white */
+      --ink-soft:   #99a6b6;
+      --ink-faint:  #737f93;   /* lifted for nighttime legibility (~4.7:1) */
+      --dawn:       #c9a87a;   /* the thin promise of dawn at the horizon */
+      --warm:       #d3ad7d;
+      --line:       rgba(214,226,242,0.12);
+      /* snow: luminous cool-white, softened a touch for nighttime calm */
+      --flake-rgb:  200,212,230;
+      --flake-glow: 150,180,220;
+      --glow-a:     .28;
+    }
+    body{
+      background:
+        radial-gradient(120% 80% at 50% -12%, rgba(86,108,140,0.22) 0%, rgba(86,108,140,0) 46%),
+        radial-gradient(150% 62% at 50% 117%, rgba(150,120,78,0.15) 0%, rgba(150,120,78,0) 55%),
+        linear-gradient(180deg, #0f1822 0%, #0a111a 56%, #070b12 100%);
+      color:var(--ink);
+    }
+  }
+
+  /* reduced motion */
+  @media (prefers-reduced-motion:reduce){
+    .word span,.phon,.horizon,.epigraph,.notes,.colophon{
+      animation:none; opacity:1; transform:none; filter:none;
+    }
+    .flake{ display:none; }
+  }
+</style>
 </head>
 <body>
-  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
 
-  <header class="site-header">
-    <div class="shell header-inner">
-      <a class="brand" href="#top" aria-label="Meows home" data-i18n-aria-label="brand_home">
-        <img src="favicon.png" width="28" height="28" alt="">
-        <span>Meows</span>
-      </a>
+  <div class="snow" id="snow" aria-hidden="true"></div>
 
-      <nav class="nav" aria-label="Primary navigation" data-i18n-aria-label="nav_label">
-        <a href="#why" data-i18n="nav_why">Background</a>
-        <a href="#inside" data-i18n="nav_inside">Features</a>
-        <a href="docs/" data-i18n="nav_docs">Manual</a>
-        <a href="#questions" data-i18n="nav_questions">Questions</a>
-      </nav>
+  <main class="stage">
+    <h1 class="word" id="word" aria-label="kvitra"></h1>
+    <div class="phon">KVEE&nbsp;·&nbsp;trah</div>
+    <div class="horizon" aria-hidden="true"></div>
 
-      <div class="header-tools">
-        <div class="language-switcher" data-language-switcher>
-          <span class="sr-only" id="language-label" data-i18n="language_label">Language</span>
-          <button class="language-trigger" id="language-trigger" type="button" data-language-trigger
-                  aria-haspopup="listbox" aria-expanded="false"
-                  aria-controls="language-menu" aria-label="Language: English">
-            <span class="language-current-label" id="language-current-label" data-language-current-label>English</span>
-            <span class="language-current-code" id="language-current-code" data-language-current-code aria-hidden="true">EN</span>
-            <span class="language-chevron" aria-hidden="true"></span>
-          </button>
-          <div class="language-menu" id="language-menu" role="listbox" data-language-menu
-               aria-labelledby="language-label" hidden>
-            <button class="language-option" type="button" role="option" tabindex="-1"
-                    data-language-choice="auto" aria-selected="true">
-              <span data-i18n="language_auto">Browser language</span>
-            </button>
-            <button class="language-option" type="button" role="option" tabindex="-1"
-                    data-language-choice="en" aria-selected="false">
-              <span class="language-name" lang="en">English</span>
-            </button>
-            <button class="language-option" type="button" role="option" tabindex="-1"
-                    data-language-choice="zhCN" aria-selected="false">
-              <span class="language-name" lang="zh-Hans">简体中文</span>
-            </button>
-            <button class="language-option" type="button" role="option" tabindex="-1"
-                    data-language-choice="zhTW" aria-selected="false">
-              <span class="language-name" lang="zh-Hant">繁體中文</span>
-            </button>
-            <button class="language-option" type="button" role="option" tabindex="-1"
-                    data-language-choice="ja" aria-selected="false">
-              <span class="language-name" lang="ja">日本語</span>
-            </button>
-            <button class="language-option" type="button" role="option" tabindex="-1"
-                    data-language-choice="ko" aria-selected="false">
-              <span class="language-name" lang="ko">한국어</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <main id="main">
-    <section class="hero shell" id="top">
-      <div class="hero-copy">
-        <p class="kicker" data-i18n="hero_kicker">Android 14+</p>
-        <h1 data-i18n="hero_title">SSH and server monitoring for Android</h1>
-        <p class="hero-lead" data-i18n="hero_body">Connect to your Linux servers over SSH to check their status, open a terminal or manage Docker containers.</p>
-
-        <div class="hero-actions">
-          <a class="play-badge" href="https://play.google.com/store/apps/details?id=com.meows.android&amp;referrer=utm_source%3Dofficial_website%26utm_medium%3Dreferral%26utm_campaign%3Dmeows_android_acquisition%26utm_content%3Dhero_cta" target="_blank" rel="noopener">
-            <img data-play-badge src="assets/playbadge/en.svg" width="239" height="71" alt="Get it on Google Play">
-          </a>
-          <p class="purchase-note">
-            <strong data-i18n="hero_price">One-time purchase</strong>
-            <span data-i18n="hero_price_note">Includes updates. No subscription, ads or in-app purchases.</span>
-          </p>
-        </div>
-      </div>
-
-      <div class="hero-visual">
-        <figure class="phone-shot hero-phone">
-          <img data-shot="overview" src="assets/screenshots/en/overview.webp" width="1002" height="2048" alt="Meows overview with a world map and a server card" fetchpriority="high">
-          <figcaption data-i18n="hero_caption">Server locations and live status cards.</figcaption>
-        </figure>
-      </div>
-      <dl class="hero-facts">
-        <div><dt data-i18n="fact_server_label">Server side</dt><dd data-i18n="fact_server_value">No additional monitoring software</dd></div>
-        <div><dt data-i18n="fact_permission_label">Runtime permission</dt><dd data-i18n="fact_permission_value">Notifications (optional)</dd></div>
-        <div><dt data-i18n="fact_languages_label">Interface</dt><dd data-i18n="fact_languages_value">English · 简体中文 · 繁體中文 · 日本語 · 한국어</dd></div>
-      </dl>
+    <section class="epigraph" aria-label="inscription">
+      <p class="lead">kvitra draws on <b>kvit</b>, the old northern root for &ldquo;white,&rdquo; and adds the <b>-ra</b> that sets it moving&mdash;the pure white and stillness of the first snow as it settles.</p>
+      <p>I built the name this way; only afterward did I learn it was already a real Norwegian word, meaning &ldquo;to chirp, to write a letter.&rdquo; That sense was never intended, yet it was there at the name&rsquo;s birth, so I keep it here too.</p>
+      <p class="coda">&mdash; To me, kvitra is snow; but out in the world it has also been <span class="warm">the ringing of first light</span>.</p>
     </section>
 
-    <section class="story shell ruled" id="why">
-      <div class="story-heading">
-        <h2 data-i18n="story_title">Built for my own servers</h2>
-        <svg class="animated-sketch connection-sketch" data-sketch="connection" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 380" width="640" height="380" role="img" aria-labelledby="sketch-title" aria-describedby="sketch-desc">
-          <title id="sketch-title" data-i18n="sketch_connection_title">Phone and server connected over SSH</title>
-          <desc id="sketch-desc" data-i18n="sketch_connection_desc">A terminal prompt is connected to a three-bay server by an SSH line.</desc>
-          <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <path data-pen="phone" pathLength="1" stroke-width="5.4" d="M80 73C113 68 170 71 209 77C224 80 233 90 232 107C230 142 235 177 232 217C230 246 235 281 229 306C225 321 215 327 197 325C160 323 112 328 78 321C63 317 58 307 60 290C62 249 58 208 62 165C65 140 60 116 66 92C68 81 73 76 80 73Z"/>
-            <g data-part="phone-details">
-              <path stroke-width="3.2" d="M85 105C123 103 170 105 209 109C207 144 213 178 209 213C205 240 212 269 205 291C166 296 125 292 81 291C78 261 84 234 81 207C80 168 83 140 85 105Z"/>
-              <path stroke-width="3.4" d="M124 87C138 85 153 89 166 87"/>
-              <path stroke-width="3.3" d="M119 307C136 309 156 305 172 307"/>
-            </g>
-            <g data-pen="prompt" stroke-width="4">
-              <path pathLength="1" d="M110 140C117 147 124 151 128 157C121 162 118 166 110 170"/>
-              <path pathLength="1" d="M139 173C146 171 154 173 160 172"/>
-            </g>
-            <path data-part="phone-output" stroke-width="3" d="M107 201C123 199 143 203 161 201M108 220C132 223 156 219 182 222M106 241C122 238 135 242 149 240"/>
-            <path data-pen="link" pathLength="1" stroke-width="4.1" d="M232 237C260 238 247 289 273 302C298 315 328 294 321 270C315 250 299 241 310 220C327 190 371 196 405 222"/>
-            <path data-part="link-label" stroke-width="3.2" d="M277 161C270 153 257 156 257 165C258 175 277 172 277 181C276 190 262 192 254 184M304 158C297 151 284 155 285 164C286 174 305 170 305 180C304 189 291 190 283 184M316 155C318 165 316 176 316 187M335 154C333 164 336 176 334 187M317 170C323 168 329 171 334 169"/>
-            <path data-pen="server" pathLength="1" stroke-width="5.1" d="M423 117C462 112 501 118 543 113C559 112 570 118 571 134C574 164 568 190 573 219C575 242 573 269 570 289C540 294 503 288 473 292C449 294 424 290 409 290C406 263 410 238 407 213C404 185 411 160 408 137C407 125 413 118 423 117Z"/>
-            <g data-part="server-details">
-              <path stroke-width="3.6" d="M411 173C433 177 457 170 483 174C510 178 539 172 572 176M408 232C432 230 457 236 483 233C512 230 542 235 573 231"/>
-              <path stroke-width="3.5" d="M435 145C451 142 470 147 487 143M432 203C453 205 472 200 491 202M434 262C450 259 470 264 487 261"/>
-              <path data-part="light" stroke-width="3.4" d="M539 138C547 137 551 143 548 149C545 155 534 153 533 148C532 143 534 140 539 138Z"/>
-              <path stroke-width="3.4" d="M541 195C548 197 551 203 546 209C540 214 532 208 534 202C535 198 537 196 541 195ZM540 254C546 253 552 260 548 266C544 272 535 269 534 264C533 259 536 255 540 254Z"/>
-              <path stroke-width="3.3" d="M423 292C422 299 424 306 423 311C431 313 440 310 448 312C448 305 446 300 447 293M533 292C534 300 532 306 535 310C543 312 551 308 558 310C559 303 557 297 558 292"/>
-            </g>
-          </g>
-        </svg>
+    <dl class="notes" aria-label="etymology">
+      <div class="note">
+        <dt>Sound</dt>
+        <dd><span class="glyph">KVEE-trah</span>, two syllables. It opens on kv&mdash;that cold, clean attack the northern tongue keeps for itself.</dd>
       </div>
-      <div class="story-copy">
-        <p data-i18n="story_p1">I started building Meows to check my own servers from my phone. Even for a quick look at CPU load or disk space, I was logging into each machine over SSH.</p>
-        <p data-i18n="story_p2">I did not want to install another monitoring program on those small servers. Meows uses their existing SSH access and presents Linux system information as cards and charts.</p>
-        <dl class="connection-ledger">
-          <div><dt data-i18n="connection_path_label">Connection</dt><dd data-i18n="connection_path_value">Android device → SSH → server, directly or through a bastion</dd></div>
-          <div><dt data-i18n="connection_server_label">Server side</dt><dd data-i18n="connection_server_value">An existing SSH service; no monitoring agent or extra monitoring port</dd></div>
-          <div><dt data-i18n="connection_auth_label">Sign-in</dt><dd data-i18n="connection_auth_value">Password or private key</dd></div>
-          <div><dt data-i18n="connection_middle_label">Meows service</dt><dd data-i18n="connection_middle_value">No relay or analytics backend</dd></div>
-        </dl>
+      <div class="note">
+        <dt>Root</dt>
+        <dd><b>kvit</b> &mdash; the old root for &ldquo;white&rdquo; in the Norse languages. They used it for snow, for frost, for bleached wool; it has lived a thousand years on northern tongues.</dd>
       </div>
-    </section>
-
-    <section class="work shell" id="inside">
-      <div class="section-intro">
-        <h2 data-i18n="inside_title">Using Meows</h2>
+      <div class="note">
+        <dt>Ending</dt>
+        <dd><b>-ra</b> &mdash; a verb-making tail. It turns &ldquo;white&rdquo; from a mere color into something in progress: falling, covering, coming to rest.</dd>
       </div>
-
-      <article class="feature-row feature-monitor">
-        <div class="feature-copy">
-          <p class="feature-label" data-i18n="monitor_label">Monitoring</p>
-          <h3 data-i18n="monitor_title">Live metrics and recent history</h3>
-          <p data-i18n="monitor_body">Each server has a status card for CPU, memory, disk, network and TCP readings. Switch to a chart to see recent history and current process, mount or network interface details.</p>
-          <p data-i18n="monitor_alerts">Choose alert thresholds per server and whether to receive disconnect and recovery notifications. When several thresholds are exceeded, Meows sends a combined notification.</p>
-          <svg class="animated-sketch feature-sketch" data-sketch="history" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 250" width="420" height="250" role="img" aria-labelledby="monitor-sketch-title">
-            <title id="monitor-sketch-title" data-i18n="sketch_monitor_title">Line drawing of a history chart on a sheet of paper</title>
-            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path data-pen="paper" pathLength="1" stroke-width="3.8" d="M65 31C133 27 216 33 298 29C321 31 341 51 358 68C354 110 362 163 356 209C295 213 236 207 174 212C137 215 87 208 52 211C48 169 53 134 49 98C46 64 50 40 65 31Z"/>
-              <path data-part="paper-fold" stroke-width="2.8" d="M298 31C300 46 296 58 302 70C318 74 337 67 357 69"/>
-              <path data-pen="axes" pathLength="1" stroke-width="3.2" d="M80 69C77 100 81 141 78 177C132 180 202 175 319 179"/>
-              <path data-part="grid" stroke-width="2.1" d="M91 105C155 103 211 108 303 104M91 141C169 144 233 140 305 143"/>
-              <path data-pen="history" pathLength="1" stroke-width="3.8" d="M94 162C111 148 117 169 134 145C150 125 158 144 175 123C189 105 193 129 211 103C227 80 235 114 253 91C269 74 280 101 296 88C307 82 311 94 321 85"/>
-              <path data-part="point" stroke-width="2.8" d="M320 79C326 78 331 84 328 90C324 96 315 91 315 86C315 83 317 80 320 79Z"/>
-              <path data-part="paper-ground" stroke-width="2.4" d="M82 228C111 231 131 226 150 228M167 228C187 226 205 230 218 228"/>
-            </g>
-          </svg>
-        </div>
-        <figure class="phone-shot">
-          <img data-shot="charts" src="assets/screenshots/en/charts.webp" width="1002" height="2048" loading="lazy" alt="Meows history charts and process details">
-          <figcaption data-i18n="monitor_caption">CPU history with the current process list below.</figcaption>
-        </figure>
-      </article>
-
-      <article class="feature-row feature-lens">
-        <div class="feature-copy">
-          <p class="feature-label" data-i18n="lens_label">Shell · Lens</p>
-          <h3 data-i18n="lens_title">Query addresses from terminal output</h3>
-          <p data-i18n="lens_body">Tap a recognized IP address, domain, URL or permission string in the terminal or a Docker log. Lens lists the queries and actions available for that value.</p>
-          <p data-i18n="lens_note">Queries and web links are opened when you select an action. Lens does not execute commands automatically.</p>
-          <svg class="animated-sketch feature-sketch" data-sketch="lens" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 250" width="420" height="250" role="img" aria-labelledby="lens-sketch-title">
-            <title id="lens-sketch-title" data-i18n="sketch_lens_title">Line drawing of a magnifying glass examining a value in terminal output</title>
-            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke-width="3.8" d="M56 36C116 32 179 38 243 33C260 31 272 39 273 56C270 91 278 135 271 179C221 184 181 176 132 181C100 184 65 180 38 181C34 150 40 123 37 94C34 63 37 43 56 36Z"/>
-              <path stroke-width="2.5" d="M40 67C92 71 161 64 271 69"/>
-              <path stroke-width="2.4" d="M56 51C66 53 75 50 81 52M94 51C103 50 110 53 117 51"/>
-              <path stroke-width="3.2" d="M61 93C68 98 73 103 79 109C73 114 67 117 61 122M94 120C111 117 128 122 148 119M61 141C83 144 110 139 130 142M143 142C164 140 180 144 196 141"/>
-              <path data-pen="value" pathLength="1" stroke-width="3" d="M93 128C115 133 131 126 151 131"/>
-              <g data-part="glass" data-anchor-x="298" data-anchor-y="138">
-                <g data-pen="glass" stroke-width="4">
-                  <path pathLength="1" d="M289 94C316 85 344 106 346 133C349 160 328 184 300 184C270 186 247 164 248 138C247 117 265 99 289 94Z"/>
-                  <path pathLength="1" d="M334 172C349 184 361 197 378 212C384 217 381 225 375 227C362 218 350 203 327 180"/>
-                </g>
-                <g data-part="glass-details">
-                  <path stroke-width="2.6" d="M270 135C282 132 300 138 323 134M273 150C285 153 303 148 315 151"/>
-                  <path stroke-width="2.5" d="M322 132C327 131 330 137 327 141C323 145 316 141 317 137C317 134 319 132 322 132Z"/>
-                </g>
-              </g>
-            </g>
-          </svg>
-        </div>
-        <div class="lens-stack" aria-label="Meows tools and Lens" data-i18n-aria-label="lens_stack_aria">
-          <figure class="phone-shot phone-back">
-            <img data-shot="tools" src="assets/screenshots/en/tools.webp" width="1002" height="2048" loading="lazy" alt="Meows network and Linux tools">
-          </figure>
-          <figure class="phone-shot phone-front">
-            <img data-shot="lens" src="assets/screenshots/en/lens.webp" width="1002" height="2048" loading="lazy" alt="Meows Lens actions for a selected address">
-          </figure>
-        </div>
-      </article>
-
-      <article class="feature-row feature-more">
-        <div class="feature-copy">
-          <p class="feature-label" data-i18n="more_label">Other tools</p>
-          <h3 data-i18n="more_title">Docker, tunnels and other tools</h3>
-          <p data-i18n="more_body">When your SSH account has access to Docker, you can view container status and logs or start and stop containers. SSH tunnels support local and remote forwarding, including connections through a bastion host.</p>
-          <p data-i18n="more_tools">Network queries, conversion tools, and the Linux and C manuals are in Settings. They can be used without connecting a server.</p>
-          <svg class="animated-sketch operations-sketch" data-sketch="operations" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" role="img" aria-labelledby="operations-sketch-title">
-            <title id="operations-sketch-title" data-i18n="sketch_operations_title">Line drawing of SSH container management and separate network tools</title>
-            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke-width="3.7" d="M40 55C64 50 94 56 118 52C132 52 140 60 139 73C137 96 142 122 137 147C107 151 76 146 43 150C31 150 27 118 29 101C27 83 31 68 40 55Z"/>
-              <path stroke-width="2.6" d="M30 77C60 80 98 75 139 79M52 65C59 63 65 67 70 65M86 66C92 64 98 68 105 66"/>
-              <g data-pen="command" stroke-width="3.1">
-                <path pathLength="1" d="M49 96C55 102 64 106 68 112C61 117 56 121 49 124"/>
-                <path pathLength="1" d="M81 125C92 123 104 127 114 124"/>
-              </g>
-              <path stroke-width="3.8" d="M331 40C366 36 402 42 435 38C448 37 456 46 455 62C452 107 459 153 453 195C418 201 380 195 344 200C330 201 316 199 311 192C307 151 312 111 308 73C307 56 313 45 331 40Z"/>
-              <path stroke-width="2.5" d="M311 76C351 80 403 73 454 79M323 197C325 204 321 211 324 215M438 197C436 204 440 210 438 215"/>
-              <path stroke-width="1.8" d="M337 51C338 56 337 60 338 65M338 51C352 49 352 65 338 65M355 57C367 51 369 67 359 66C353 66 352 60 355 57ZM380 57C373 51 366 62 373 66C376 67 379 65 381 64M385 50C386 55 384 60 386 66M395 55C392 59 389 60 386 61C389 61 393 64 396 66M401 61C405 59 409 62 412 59C410 52 399 55 400 62C400 67 408 69 413 65M418 55C417 59 419 63 418 67M419 59C420 55 423 54 427 56"/>
-              <g data-pen="containers" stroke-width="2.8">
-                <path pathLength="1" d="M330 91C359 88 400 94 433 90C434 100 432 114 434 125C401 128 364 123 332 127C329 116 333 103 330 91Z"/>
-                <path pathLength="1" d="M332 140C367 137 401 143 434 139C436 152 432 165 434 177C400 181 363 175 332 179C330 167 334 153 332 140Z"/>
-              </g>
-              <path data-part="container-details" stroke-width="2.1" d="M347 97C346 104 349 114 347 120M369 97C371 105 367 113 369 121M394 97C392 105 396 114 394 120M416 97C418 106 414 113 416 121M348 146C347 155 350 165 348 172M370 146C372 154 368 164 370 173M394 146C392 155 396 164 394 172M416 146C418 155 414 164 416 173"/>
-              <path data-pen="ssh" pathLength="1" stroke-width="3.3" d="M140 112C163 109 165 151 193 150C220 150 222 95 251 97C274 98 279 117 310 115"/>
-              <path data-part="ssh-tip" stroke-width="2.5" d="M296 107C301 112 306 113 310 115C305 119 302 122 297 125"/>
-              <path data-part="ssh-label" stroke-width="1.8" d="M215 66C209 62 201 67 205 71C208 75 216 72 215 77C214 82 205 82 202 79M231 66C225 62 218 67 221 71C224 75 232 72 231 77C230 82 221 82 218 79M237 65C238 70 236 75 238 81M248 65C247 70 249 76 247 81M237 73C241 72 244 74 248 73"/>
-              <path stroke-width="3.1" d="M53 210C80 207 108 213 137 209C151 210 157 217 156 227C154 241 158 258 152 271C120 275 87 269 57 273C44 273 39 266 40 254C42 238 37 217 53 210Z"/>
-              <path stroke-width="1.7" d="M56 222C57 226 55 230 57 234M57 222C69 219 70 234 57 234M74 234C75 229 73 225 75 222C78 226 81 229 84 234C83 230 85 225 84 221M100 223C96 219 89 223 92 227C95 230 102 227 101 232C99 236 93 235 90 233"/>
-              <path data-pen="query" pathLength="1" stroke-width="2.5" d="M55 251C74 246 104 255 130 250"/>
-              <g data-pen="magnifier" stroke-width="3">
-                <path pathLength="1" d="M182 206C195 202 207 211 208 224C210 238 200 248 187 249C174 251 163 239 165 227C165 217 172 210 182 206Z"/>
-                <path pathLength="1" d="M203 242C213 249 219 257 229 266"/>
-              </g>
-              <path stroke-width="2.2" d="M52 288C96 285 134 291 158 287M321 236C354 233 398 239 445 236"/>
-            </g>
-          </svg>
-          <div class="command-strip" aria-label="Command examples" data-i18n-aria-label="examples_aria">
-            <code>docker logs -f web</code>
-            <code>openssl s_client -connect example.com:443</code>
-            <code>dig +short example.com</code>
-            <code>chmod 755 deploy.sh</code>
-          </div>
-        </div>
-        <aside class="tool-index">
-          <p data-i18n="tool_index_intro">Tools</p>
-          <div class="tool-columns">
-            <ul>
-              <li data-i18n="tool_terminal">SSH terminal</li>
-              <li>Docker</li>
-              <li data-i18n="tool_tunnels">SSH tunnels</li>
-              <li data-i18n="tool_jump">Bastion hosts</li>
-              <li data-i18n="tool_permissions">Permission calculator</li>
-            </ul>
-            <ul>
-              <li>DNS / WHOIS / TLS</li>
-              <li>IP / ASN</li>
-              <li data-i18n="tool_subnet_cron">Subnet / Cron</li>
-              <li data-i18n="tool_manuals">Linux &amp; C manuals</li>
-              <li data-i18n="tool_regex_time">Regex / Timestamp</li>
-            </ul>
-          </div>
-        </aside>
-      </article>
-    </section>
-
-    <section class="privacy-panel" id="privacy">
-      <div class="shell privacy-grid">
-        <div>
-          <h2 data-i18n="privacy_title">Credentials and data</h2>
-          <p class="privacy-lead" data-i18n="privacy_body">DNS, WHOIS and TLS queries make network connections when you use them. Queries against the local IP database stay on the device.</p>
-          <a class="text-link" href="privacy/" data-i18n="privacy_link">Read the privacy policy →</a>
-          <svg class="animated-sketch privacy-sketch" data-sketch="credentials" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 250" width="420" height="250" role="img" aria-labelledby="privacy-sketch-title">
-            <title id="privacy-sketch-title" data-i18n="sketch_privacy_title">Line drawing of a file drawer and a key representing credential storage</title>
-            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path data-pen="drawer" pathLength="1" stroke-width="3.8" d="M67 65C107 61 165 67 205 63C218 61 230 64 241 71C256 81 270 89 279 99C278 133 281 172 277 203C238 209 183 204 136 209C104 210 71 207 45 208C42 175 47 143 43 114C42 104 44 96 49 88C55 80 60 72 67 65Z"/>
-              <g data-part="drawer-details">
-                <path stroke-width="2.7" d="M45 107C94 112 149 105 197 109C219 111 249 106 279 109M205 64C204 78 207 94 204 109M279 110C263 108 252 105 241 97C227 90 219 81 206 72"/>
-                <path stroke-width="2.7" d="M70 86C105 82 138 89 175 85M50 121C88 118 143 125 183 120C212 117 241 122 267 120C266 143 270 169 265 193C229 197 183 191 141 195C108 197 78 193 56 195C54 170 58 143 50 121Z"/>
-              </g>
-              <path data-pen="handle" pathLength="1" stroke-width="3.1" d="M123 147C123 155 121 164 127 167C137 171 155 168 170 168C176 165 175 156 175 149"/>
-              <path data-part="drawer-marks" stroke-width="2.3" d="M100 135C119 132 142 137 160 134M72 220C78 218 87 222 94 220M238 219C247 221 257 217 265 220"/>
-              <g data-part="key">
-                <g data-pen="key" stroke-width="3.6">
-                  <path pathLength="1" d="M309 68C322 52 345 50 357 63C370 77 365 96 354 105C343 115 324 113 313 102C303 92 302 78 309 68Z"/>
-                  <path pathLength="1" d="M322 110C312 127 301 143 289 163C295 168 300 172 306 175C310 169 314 163 318 159C313 155 309 154 305 151C309 146 313 139 317 135C321 136 326 140 330 142C334 136 338 130 341 123C336 120 331 116 326 114"/>
-                </g>
-                <path data-part="key-hole" stroke-width="2.7" d="M334 68C342 65 351 72 349 80C348 89 337 94 331 86C325 79 328 71 334 68Z"/>
-              </g>
-              <path data-part="key-rays" stroke-width="2.3" d="M359 119C366 122 369 126 373 130M371 102C377 104 382 105 387 104"/>
-            </g>
-          </svg>
-        </div>
-        <dl class="privacy-ledger">
-          <div><dt data-i18n="privacy_q1">SSH credentials</dt><dd data-i18n="privacy_a1">SSH passwords and private keys are encrypted on your device and protected using Android Keystore.</dd></div>
-          <div><dt data-i18n="privacy_q2">Monitoring data</dt><dd data-i18n="privacy_a2">Monitoring history is stored on your device. It is not sent to Meows or other third parties.</dd></div>
-          <div><dt data-i18n="privacy_q3">Connection path</dt><dd data-i18n="privacy_a3">Your phone connects to the servers you configure over SSH, directly or through a bastion. Meows has no relay service.</dd></div>
-          <div><dt data-i18n="privacy_q4">Optional backup</dt><dd data-i18n="privacy_a4">Optional backups are encrypted on the device and stored in your own Google Drive account's hidden app data folder. Monitoring history is not included.</dd></div>
-        </dl>
+      <div class="note">
+        <dt>Chance</dt>
+        <dd>It also happens to be a true Norwegian verb, meaning <b>to chirp</b> &mdash; and likewise <b>to write, to send word</b>. A letter landing here is a single birdcall upon the snow.</dd>
       </div>
-    </section>
+    </dl>
 
-    <section class="maker shell ruled">
-      <div class="maker-copy">
-        <h2 data-i18n="maker_title">Thanks to the people who helped test</h2>
-        <p data-i18n="maker_p1">Testing only on my own machines missed differences in other Linux environments. People on LowEndTalk shared system information and access to test servers, helping me correct metric collection and history charts.</p>
-          <p data-i18n="maker_p2">With their permission, some participants are listed on Meows' acknowledgements page.</p>
-        <svg class="animated-sketch community-sketch" data-sketch="community" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" width="480" height="270" role="img" aria-labelledby="community-sketch-title">
-          <title id="community-sketch-title" data-i18n="sketch_community_title">Line drawing of system samples becoming handwritten testing notes</title>
-          <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <path data-pen="sample" pathLength="1" stroke-width="3.6" d="M40 58C65 49 88 50 117 42C129 40 147 54 161 62C165 96 174 128 178 162C150 169 120 171 88 181C68 186 56 182 53 168C49 133 39 97 40 58Z"/>
-            <path data-part="sample-fold" stroke-width="2.5" d="M118 42C120 54 121 62 126 71C137 73 149 65 161 62M52 76C75 74 94 65 113 65"/>
-            <g data-pen="prompt" stroke-width="3">
-              <path pathLength="1" d="M61 95C68 99 75 103 81 108C75 114 73 120 66 125"/>
-              <path pathLength="1" d="M94 123C102 121 112 119 120 119"/>
-            </g>
-            <path data-part="sample-output" stroke-width="2.4" d="M68 143C91 137 120 135 144 130M73 158C96 156 122 150 148 148"/>
-            <path stroke-width="3.5" d="M281 58C310 59 334 54 365 58C373 60 378 66 378 79C375 118 381 161 376 205C347 210 315 205 287 210C268 211 251 208 237 209C235 171 240 138 236 100C235 83 240 70 251 63C260 61 270 60 281 58Z"/>
-            <path stroke-width="2.8" d="M264 61C267 99 264 138 268 171C269 184 267 197 269 209M247 82C239 82 231 86 234 92C237 97 245 96 251 91M248 120C239 119 232 123 234 130C237 135 245 134 251 129M247 157C240 155 232 162 234 168C239 172 246 170 251 167M249 191C240 190 234 194 236 200C239 205 247 203 252 199"/>
-            <path stroke-width="2.4" d="M286 89C290 93 293 98 297 99C303 93 308 85 314 80M326 93C337 90 348 94 359 92M286 127C290 131 293 136 297 137C303 131 308 123 314 118M326 131C337 128 348 132 359 130"/>
-            <path data-pen="note" pathLength="1" stroke-width="2.4" d="M326 169C337 166 348 170 359 168"/>
-            <g data-pen="transfer" stroke-width="3.3">
-              <path pathLength="1" d="M172 101C193 72 218 83 217 104C216 120 191 118 193 137C196 155 218 156 240 147"/>
-              <path pathLength="1" d="M228 140C233 143 237 144 240 147C236 151 232 154 229 159"/>
-            </g>
-            <path stroke-width="2.7" d="M293 161C298 157 307 161 307 168C307 175 299 179 293 175C288 172 288 165 293 161Z"/>
-            <g data-part="pencil" data-anchor-x="388" data-anchor-y="220">
-              <path stroke-width="3" d="M389 204C395 177 403 155 410 129C414 129 419 132 423 135C417 160 409 186 401 208C397 213 393 217 388 220C387 215 388 209 389 204ZM410 128C412 123 414 117 417 113C422 111 427 114 429 119C428 126 425 131 423 135M389 204C393 204 397 207 401 208"/>
-            </g>
-            <path data-part="paper-ground" stroke-width="2.2" d="M83 219C116 215 149 221 178 218M286 232C318 230 343 234 365 231"/>
-          </g>
-        </svg>
-        <p class="signature" aria-label="Li Bainan"><span>—</span> Li Bainan</p>
-      </div>
-      <div class="maker-image">
-        <figure class="phone-shot">
-          <img data-shot="thanks" src="assets/screenshots/en/thanks.webp" width="1002" height="2048" loading="lazy" alt="Meows acknowledgements page with different paw avatars">
-        </figure>
-      </div>
-    </section>
-
-    <section class="faq shell" id="questions">
-      <div class="section-intro compact">
-        <h2 data-i18n="faq_title">Before you start</h2>
-      </div>
-
-      <div class="faq-list disclosure-list">
-        <details>
-          <summary data-i18n="q1">Do I need to install anything on the server?</summary>
-          <p data-i18n="a1">No additional monitoring software is needed. Use an existing SSH service with an account that can read the required system information.</p>
-        </details>
-        <details>
-          <summary data-i18n="q2">Can I connect through a bastion host?</summary>
-          <p data-i18n="a2">Yes, if the bastion can reach your target server. Monitoring, terminal sessions and tunnels can all use it.</p>
-        </details>
-        <details>
-          <summary data-i18n="q3">Which Android version is required?</summary>
-          <p data-i18n="a3">Android 14 or later.</p>
-        </details>
-        <details>
-          <summary data-i18n="q4">Is there an iOS version?</summary>
-          <p data-i18n="a4">No iOS version is available at the moment.</p>
-        </details>
-      </div>
-    </section>
-
+    <footer class="colophon">
+      <div class="mark">KVITRA.COM</div>
+      <div>A name, dug out of a long night, come to rest here.</div>
+    </footer>
   </main>
 
-  <footer class="site-footer">
-    <div class="shell footer-inner">
-      <div class="footer-brand"><img src="favicon.png" width="28" height="28" alt=""><span>Meows</span></div>
-      <p data-i18n="footer_note">Independently developed and maintained by Li Bainan.</p>
-      <div class="page-links">
-        <a href="docs/" data-i18n="footer_docs">Manual</a>
-        <a href="privacy/" data-i18n="footer_privacy">Privacy Policy</a>
-        <a href="terms/" data-i18n="footer_terms">Terms of Use</a>
-        <a href="https://play.google.com/store/apps/details?id=com.meows.android&amp;referrer=utm_source%3Dofficial_website%26utm_medium%3Dreferral%26utm_campaign%3Dmeows_android_acquisition%26utm_content%3Dfooter_link" target="_blank" rel="noopener">Google Play</a>
-        <a href="https://github.com/KeSaite/Meows" target="_blank" rel="noopener" data-i18n="footer_source">Website source on GitHub</a>
-      </div>
-    </div>
-  </footer>
+<script>
+  // build wordmark, one span per letter for staggered reveal
+  (function(){
+    var word = document.getElementById('word');
+    var letters = 'kvitra'.split('');
+    letters.forEach(function(ch, i){
+      var s = document.createElement('span');
+      s.textContent = ch;
+      s.style.animationDelay = (0.15 + i * 0.11) + 's';
+      word.appendChild(s);
+    });
+  })();
+
+  // generate snowflakes with depth layering: size / opacity / blur / speed by depth
+  (function(){
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    var snow = document.getElementById('snow');
+    var N = 70;
+    for (var i=0;i<N;i++){
+      var f = document.createElement('div');
+      f.className = 'flake';
+      // depth: skew toward 0 (far) so most flakes are small/faint, a few near and prominent
+      var t     = Math.pow(Math.random(), 1.6);             // 0 = far, 1 = near
+      var size  = (1.4 + t*4.8).toFixed(1);                 // 1.4 – 6.2 px
+      var alpha = (0.30 + t*0.55).toFixed(2);               // 0.30 – 0.85 fill opacity
+      var blur  = (2 + t*4).toFixed(1);                     // 2 – 6 px halo
+      var dur   = (26 - t*13 + Math.random()*4).toFixed(1); // near falls faster (~13–28s)
+      var delay = (Math.random()*-30).toFixed(1);           // negative delay to stagger start
+      var left  = (Math.random()*100).toFixed(2);
+      var drift = ((Math.random()*90 - 45)).toFixed(0) + 'px'; // horizontal drift ±45px
+      f.style.width = size+'px';
+      f.style.height = size+'px';
+      f.style.left = left+'vw';
+      f.style.setProperty('--a', alpha);          // fill opacity (depth)
+      f.style.setProperty('--bl', blur+'px');     // halo radius (depth)
+      f.style.animationDuration = dur+'s';
+      f.style.animationDelay = delay+'s';
+      f.style.setProperty('--drift', drift);
+      f.style.opacity = '0';
+      snow.appendChild(f);
+    }
+  })();
+</script>
 </body>
 </html>
